@@ -8,12 +8,12 @@ using System.IO;
 
 namespace Reader.Business.FileReaders
 {
-    public class SftFileReaderExceptionHandler : IFileReader
+    public class FileReaderExceptionHandler : IFileReader
     {
         private IFileReader _fileReader;
         private bool _fileIsLoad = false;
 
-        public SftFileReaderExceptionHandler(IFileReader fileReader)
+        public FileReaderExceptionHandler(IFileReader fileReader)
         {
             _fileReader = fileReader;
         }

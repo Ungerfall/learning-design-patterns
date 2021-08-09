@@ -2,9 +2,10 @@
 // property of EPAM Systems, Inc. and/or its suppliers and is protected by international intellectual
 // property law. Dissemination of this information or reproduction of this material is strictly forbidden,
 // unless prior written permission is obtained from EPAM Systems, Inc
-﻿using Reader.Business.Enums;
+using Reader.Business.Enums;
 using Reader.Business.Exceptions;
 using Reader.Business.FileReaders;
+using Reader.Business.FileReaders.Softsystem;
 using Reader.Interfaces;
 using System;
 using System.IO;
@@ -22,12 +23,17 @@ namespace Reader.Business.Helpers
                 case EFileType.Sft:
                     {
                         var reader = new SftFileReader();
-                        return new SftFileReaderExceptionHandler(reader);
+                        return new FileReaderExceptionHandler(reader);
+                    }
+                case EFileType.Mft:
+                    {
+                        var reader = new MftFileReader();
+                        return new FileReaderExceptionHandler(reader);
                     }
                 default: throw new UnknownFileFormat();
             }
         }
-        
+
         private static EFileType GetFileType(string fileName)
         {
             var extension = Path.GetExtension(fileName).TrimStart('.');

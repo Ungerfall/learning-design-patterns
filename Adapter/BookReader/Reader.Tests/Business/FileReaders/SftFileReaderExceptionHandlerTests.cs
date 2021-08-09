@@ -59,7 +59,7 @@ namespace Reader.Tests.Business.FileReaders
 
         protected override Interfaces.IFileReader GetFileReader()
         {
-            return new SftFileReaderExceptionHandler(base.GetFileReader());
+            return new FileReaderExceptionHandler(base.GetFileReader());
         }
 
         #endregion
