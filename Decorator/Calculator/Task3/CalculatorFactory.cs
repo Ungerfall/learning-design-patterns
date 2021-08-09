@@ -37,7 +37,7 @@
 
         public ICalculator CreateRoundingCalculator()
         {
-            return new RoundingCalculatorDecorator();
+            return new RoundingCalculatorDecorator(CreateCalculator());
         }
     }
 }

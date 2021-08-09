@@ -32,13 +32,18 @@ namespace Calculator.Task3
 
     public class RoundingCalculatorDecorator : ICalculator
     {
-        public RoundingCalculatorDecorator()
+        private readonly ICalculator _calculator;
+
+        public RoundingCalculatorDecorator(ICalculator calculator)
         {
+            _calculator = calculator;
         }
 
         public decimal CalculatePayment(string touristName)
         {
-            throw new NotImplementedException();
+            var payment = _calculator.CalculatePayment(touristName);
+
+            return Decimal.Round(payment);
         }
     }
 
