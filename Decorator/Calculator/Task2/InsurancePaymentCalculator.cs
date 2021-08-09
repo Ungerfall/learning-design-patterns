@@ -22,19 +22,35 @@ namespace Calculator.Task2
 
         public decimal CalculatePayment(string touristName)
         {
-            throw new NotImplementedException();
+            var rate = currencyService.LoadCurrencyRate();
+            var tripDetails = tripRepository.LoadTrip(touristName);
+            return Constants.A * rate * tripDetails.FlyCost
+                   + Constants.B * rate * tripDetails.AccomodationCost
+                   + Constants.C * rate * tripDetails.ExcursionCost;
         }
     }
 
     public class CachedInsurancePaymentCalculator : ICalculator
     {
-        public CachedInsurancePaymentCalculator()
+        private readonly ICalculator _base;
+        private readonly Dictionary<string, decimal> _memo = new Dictionary<string, decimal>();
+
+        public CachedInsurancePaymentCalculator(ICalculator calculator)
         {
+            _base = calculator;
         }
 
         public decimal CalculatePayment(string touristName)
         {
-            throw new NotImplementedException();
+            if (_memo.TryGetValue(touristName, out var payment))
+            {
+                return payment;
+            }
+
+            var calculatedPayment = _base.CalculatePayment(touristName);
+            _memo[touristName] = calculatedPayment;
+
+            return calculatedPayment;
         }
     }
 }
