@@ -1,15 +1,24 @@
 ﻿using RetailEquity.Model;
-using System;
+using RetailEquity.Task1;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RetailEquity
 {
     public class TradeFilter
     {
-        public IEnumerable<Trade> FilterForBank(IEnumerable<Trade> trades, Bank bank)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+        private readonly IBankFactoryFinder _factoryFinder;
+
+        public TradeFilter(IBankFactoryFinder factoryFinder = null)
         {
-            throw new Exception("Unsupported bank");
+            _factoryFinder = factoryFinder ?? new BankFactoryFinder();
+        }
+
+        public IEnumerable<Trade> FilterForBank(IEnumerable<Trade> trades, Bank bank)
+        {
+            var factory = _factoryFinder.Find(bank);
+            var filter = factory.CreateTradeFilter();
+
+            return filter.Match(trades);
         }
     }
 }
