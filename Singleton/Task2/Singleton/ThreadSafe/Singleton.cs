@@ -1,15 +1,26 @@
-﻿using System;
-
-namespace Singleton.ThreadSafe
+﻿namespace Singleton.ThreadSafe
 {
-    public class Singleton
+    // https://csharpindepth.com/articles/singleton
+    public sealed class Singleton
     {
+        private static Singleton instance = null;
+        private static readonly object padLock = new object();
+
+        private Singleton()
+        {
+        }
+
         public static Singleton Instance
         {
             get
             {
-                // TODO: Return single instance, thread safe with lock
-                throw new NotImplementedException();
+                lock (padLock)
+                {
+                    if (instance == null)
+                        instance = new Singleton();
+
+                    return instance;
+                }
             }
         }
     }
