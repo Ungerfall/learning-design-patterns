@@ -1,15 +1,22 @@
-﻿using System;
-
-namespace Singleton.NonThreadSafe
+﻿namespace Singleton.NonThreadSafe
 {
-    public class Singleton
+    // https://csharpindepth.com/articles/singleton
+    public sealed class Singleton
     {
+        private static Singleton instance = null;
+
+        private Singleton()
+        {
+        }
+
         public static Singleton Instance
         {
             get
             {
-                // TODO: Return single instance, no thread safe
-                throw new NotImplementedException();
+                if (instance == null)
+                    instance = new Singleton();
+
+                return instance;
             }
         }
     }
