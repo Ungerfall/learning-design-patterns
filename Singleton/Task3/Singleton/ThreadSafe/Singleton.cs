@@ -2,15 +2,15 @@
 
 namespace Singleton.ThreadSafe
 {
-    public class Singleton
+    // https://csharpindepth.com/articles/singleton
+    public sealed class Singleton
     {
-        public static Singleton Instance
+        private static readonly Lazy<Singleton> lazy = new Lazy<Singleton>(() => new Singleton(), isThreadSafe: true);
+
+        private Singleton()
         {
-            get
-            {
-                // TODO: Return single instance, no thread safe
-                throw new NotImplementedException();
-            }
         }
+
+        public static Singleton Instance => lazy.Value;
     }
 }
