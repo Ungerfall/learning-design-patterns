@@ -2,7 +2,7 @@
 
 namespace FeedManager.Task2.FeedValidators
 {
-    public interface IFeedValidator<T>
+    public interface IFeedValidator<in T>
         where T: TradeFeed
     {
         ValidateResult Validate(T feed);

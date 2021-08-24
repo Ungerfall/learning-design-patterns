@@ -8,6 +8,8 @@
 
         public static string NotValidIsin { get; } = "Should be valid Isin";
 
+        public static string NotValidMaturityDate { get; } = "Maturity date should be bigger than valuation date";
+
         public static string PropertyRangeError(string name, decimal minVal, decimal maxVal)
         {
             return $"{name} should be between {minVal} and {maxVal}";
