@@ -2,25 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static FeedManager.Task1.FeedValidators.FeedValidatorUtils;
 
 namespace FeedManager.Task1.FeedValidators
 {
     public class Delta1FeedValidator : IFeedValidator<Delta1Feed>
     {
+        private readonly FeedValidator feedValidator = new FeedValidator();
+
         public ValidateResult Validate(Delta1Feed feed)
         {
+            var tradeFeedResult = feedValidator.Validate(feed);
+
             var errors = new List<string>();
-            if (feed.StagingId < 1 || feed.CounterpartyId < 1 || feed.PrincipalId < 1 || feed.SourceAccountId < 1)
-            {
-                errors.Add(ErrorCode.IdIsNotValidMessage);
-            }
-
-            if (feed.CurrentPrice < 0 || GetNumberOfDecimalPlaces(feed.CurrentPrice) != 2)
-            {
-                errors.Add(ErrorCode.PriceIsNotValid);
-            }
-
             if (!IsIsinValid(feed.Isin))
             {
                 errors.Add(ErrorCode.NotValidIsin);
@@ -31,12 +24,11 @@ namespace FeedManager.Task1.FeedValidators
                 errors.Add(ErrorCode.NotValidMaturityDate);
             }
 
-            if (errors.Any())
-            {
-                return new ValidateResult { Errors = errors, IsValid = false };
-            }
+            var result = errors.Any()
+                ? new ValidateResult { Errors = errors, IsValid = false }
+                : new ValidateResult { IsValid = true };
 
-            return new ValidateResult { IsValid = true };
+            return ValidateResult.Merge(tradeFeedResult, result);
         }
 
         private static bool IsIsinValid(string isin)
