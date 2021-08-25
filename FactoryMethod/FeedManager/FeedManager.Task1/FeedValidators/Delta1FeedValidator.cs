@@ -7,7 +7,7 @@ namespace FeedManager.Task1.FeedValidators
 {
     public class Delta1FeedValidator : IFeedValidator<Delta1Feed>
     {
-        private readonly FeedValidator feedValidator = new FeedValidator();
+        private readonly FeedValidator feedValidator = new FeedValidator(); // TODO Нарушение SOLID
 
         public ValidateResult Validate(Delta1Feed feed)
         {

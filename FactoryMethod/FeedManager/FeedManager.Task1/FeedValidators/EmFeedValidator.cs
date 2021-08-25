@@ -6,7 +6,7 @@ namespace FeedManager.Task1.FeedValidators
 {
     public class EmFeedValidator : IFeedValidator<EmFeed>
     {
-        private readonly FeedValidator feedValidator = new FeedValidator();
+        private readonly FeedValidator feedValidator = new FeedValidator(); // TODO Нарушение SOLID
 
         public ValidateResult Validate(EmFeed feed)
         {

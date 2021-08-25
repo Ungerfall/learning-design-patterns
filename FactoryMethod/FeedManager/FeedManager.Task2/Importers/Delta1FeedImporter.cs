@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace FeedManager.Task2.Importers
 {
+    // TODO Дублирование кода в обоих Importer
     public class Delta1FeedImporter
     {
         private readonly IDatabaseRepository database;
