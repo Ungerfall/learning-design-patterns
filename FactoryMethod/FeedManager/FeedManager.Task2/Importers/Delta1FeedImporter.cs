@@ -1,43 +1,23 @@
 ﻿using FeedManager.Task2.Database;
-using FeedManager.Task2.Feeds;
 using FeedManager.Task2.FeedValidators;
 using FeedManager.Task2.Matchers;
-using System.Collections.Generic;
 
 namespace FeedManager.Task2.Importers
 {
-    // TODO Дублирование кода в обоих Importer
-    public class Delta1FeedImporter
+    public class Delta1FeedImporter : FeedImporter
     {
-        private readonly IDatabaseRepository database;
-        private readonly IFeedValidatorFactory validatorFactory = new FeedValidatorFactory();
-        private readonly IFeedMatcherFactory matcherFactory = new FeedMatcherFactory();
-
-        public Delta1FeedImporter(IDatabaseRepository database)
+        public Delta1FeedImporter(IDatabaseRepository database) : base(database)
         {
-            this.database = database;
         }
 
-        public void Import(IEnumerable<Delta1Feed> feeds)
+        protected override IFeedValidator<T> CreateFeedValidator<T>()
         {
-            var validator = validatorFactory.CreateFeedValidator<Delta1Feed>();
-            var matcher = matcherFactory.CreateFeedMatcher<Delta1Feed>();
-            var existingFeeds = database.LoadFeeds<Delta1Feed>();
+            return (IFeedValidator<T>)new Delta1FeedValidator();
+        }
 
-            foreach (var feed in feeds)
-            {
-                var validation = validator.Validate(feed);
-                if (!validation.IsValid)
-                {
-                    database.SaveErrors(feed.StagingId, validation.Errors);
-                    continue;
-                }
-
-                if (!existingFeeds.Exists(x => matcher.Match(x, feed)))
-                {
-                    database.SaveFeed(feed);
-                }
-            }
+        protected override IFeedMatcher<T> CreateFeedMatcher<T>()
+        {
+            return (IFeedMatcher<T>)new Delta1FeedMatcher();
         }
     }
 }
