@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FeedManager.Task1.FeedValidators
 {
-    public class FeedValidator : IFeedValidator<TradeFeed>
+    public abstract class FeedValidator
     {
         public ValidateResult Validate(TradeFeed feed)
         {

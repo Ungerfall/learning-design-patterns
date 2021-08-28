@@ -4,13 +4,11 @@ using System.Linq;
 
 namespace FeedManager.Task1.FeedValidators
 {
-    public class EmFeedValidator : IFeedValidator<EmFeed>
+    public class EmFeedValidator : FeedValidator, IFeedValidator<EmFeed>
     {
-        private readonly FeedValidator feedValidator = new FeedValidator(); // TODO Нарушение SOLID
-
         public ValidateResult Validate(EmFeed feed)
         {
-            var tradeFeedResult = feedValidator.Validate(feed);
+            var tradeFeedResult = base.Validate(feed);
 
             var errors = new List<string>();
             if (feed.Sedol <= 0 || feed.Sedol >= 100)

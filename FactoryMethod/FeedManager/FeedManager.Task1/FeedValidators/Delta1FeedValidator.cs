@@ -5,13 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace FeedManager.Task1.FeedValidators
 {
-    public class Delta1FeedValidator : IFeedValidator<Delta1Feed>
+    public class Delta1FeedValidator : FeedValidator, IFeedValidator<Delta1Feed>
     {
-        private readonly FeedValidator feedValidator = new FeedValidator(); // TODO Нарушение SOLID
-
         public ValidateResult Validate(Delta1Feed feed)
         {
-            var tradeFeedResult = feedValidator.Validate(feed);
+            var tradeFeedResult = base.Validate(feed);
 
             var errors = new List<string>();
             if (!IsIsinValid(feed.Isin))
