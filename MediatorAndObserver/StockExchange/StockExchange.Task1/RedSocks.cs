@@ -2,20 +2,23 @@
 
 namespace StockExchange.Task1
 {
-    public class RedSocks
+    public class RedSocks : IPlayer
     {
-        public RedSocks()
+        private readonly IBroker _broker;
+
+        public RedSocks(IBroker broker)
         {
+            _broker = broker ?? throw new ArgumentNullException(nameof(broker));
         }
 
         public bool SellOffer(string stockName, int numberOfShares)
         {
-            throw new NotImplementedException();
+            return _broker.SellOffer(this, stockName, numberOfShares);
         }
 
         public bool BuyOffer(string stockName, int numberOfShares)
         {
-            throw new NotImplementedException();
+            return _broker.BuyOffer(this, stockName, numberOfShares);
         }
     }
 }

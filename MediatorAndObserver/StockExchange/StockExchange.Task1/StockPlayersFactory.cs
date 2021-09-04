@@ -4,10 +4,13 @@
     {
         public Players CreatePlayers()
         {
+            var broker = new Broker();
+            var redSocks = new RedSocks(broker);
+            var blossomers = new Blossomers(broker);
             return new Players
             {
-                RedSocks = new RedSocks(),
-                Blossomers = new Blossomers()
+                RedSocks = redSocks,
+                Blossomers = blossomers
             };
         }
     }
