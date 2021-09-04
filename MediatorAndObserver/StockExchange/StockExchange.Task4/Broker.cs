@@ -5,12 +5,12 @@ namespace StockExchange.Task4
 {
     public record Offer(Guid PlayerId, string StockName, int NumberOfShares, bool isBuy);
 
-    public sealed class Broker : IBroker, IObservable<Offer>
+    public sealed class Broker : IBroker
     {
         private readonly List<(Offer offer, bool traded)> sellOffers = new();
         private readonly List<(Offer offer, bool traded)> buyOffers = new();
 
-        private readonly List<IObserver<Offer>> observers = new();
+        public event EventHandler<OfferEventArgs> OfferSucceeded;
 
         public bool SellOffer(IPlayer player, string stockName, int numberOfShares)
         {
@@ -51,8 +51,8 @@ namespace StockExchange.Task4
                     && buyOffer.NumberOfShares == numberOfShares)
                 {
                     buyOffers[i] = (buyOffer, traded: true);
-                    NotifySucceededOffer(sellOffer);
-                    NotifySucceededOffer(buyOffer);
+                    OnOfferSucceeded(sellOffer);
+                    OnOfferSucceeded(buyOffer);
                     return true;
                 }
             }
@@ -73,8 +73,8 @@ namespace StockExchange.Task4
                     && sellOffer.NumberOfShares == numberOfShares)
                 {
                     sellOffers[i] = (sellOffer, traded: true);
-                    NotifySucceededOffer(sellOffer);
-                    NotifySucceededOffer(buyOffer);
+                    OnOfferSucceeded(sellOffer);
+                    OnOfferSucceeded(buyOffer);
                     return true;
                 }
             }
@@ -82,40 +82,9 @@ namespace StockExchange.Task4
             return false;
         }
 
-        public IDisposable Subscribe(IObserver<Offer> observer)
+        private void OnOfferSucceeded(Offer offer)
         {
-            if (!observers.Contains(observer))
-            {
-                observers.Add(observer);
-            }
-
-            return new Unsubscriber(observers, observer);
-        }
-
-        private void NotifySucceededOffer(Offer offer)
-        {
-            foreach (var observer in observers)
-            {
-                observer.OnNext(offer);
-            }
-        }
-
-        private class Unsubscriber : IDisposable
-        {
-            private List<IObserver<Offer>> _observers;
-            private IObserver<Offer> _observer;
-
-            public Unsubscriber(List<IObserver<Offer>> observers, IObserver<Offer> observer)
-            {
-                _observers = observers;
-                _observer = observer;
-            }
-
-            public void Dispose()
-            {
-                if (_observer != null && _observers.Contains(_observer))
-                    _observers.Remove(_observer);
-            }
+            OfferSucceeded?.Invoke(this, new OfferEventArgs { Offer = offer });
         }
     }
 }

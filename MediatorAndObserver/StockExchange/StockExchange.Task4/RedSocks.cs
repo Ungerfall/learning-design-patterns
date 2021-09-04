@@ -2,13 +2,30 @@
 
 namespace StockExchange.Task4
 {
-    public class RedSocks : IPlayer, IObserver<Offer>
+    public class RedSocks : IPlayer
     {
         private readonly IBroker _broker;
 
         public RedSocks(IBroker broker)
         {
             _broker = broker ?? throw new ArgumentNullException(nameof(broker));
+            _broker.OfferSucceeded += BrokerOnOfferSucceeded;
+        }
+
+        private void BrokerOnOfferSucceeded(object sender, OfferEventArgs e)
+        {
+            var (playerId, _, numberOfShares, isBuy) = e.Offer;
+            if (playerId != PlayerId)
+                return;
+
+            if (isBuy)
+            {
+                BoughtShares += numberOfShares;
+            }
+            else
+            {
+                SoldShares += numberOfShares;
+            }
         }
 
         public Guid PlayerId { get; init; }
@@ -25,31 +42,5 @@ namespace StockExchange.Task4
 
         public int SoldShares { get; private set; } = 0;
         public int BoughtShares { get; private set; } = 0;
-
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(Offer value)
-        {
-            var (playerId, _, numberOfShares, isBuy) = value;
-            if (playerId != PlayerId)
-                return;
-
-            if (isBuy)
-            {
-                BoughtShares += numberOfShares;
-            }
-            else
-            {
-                SoldShares += numberOfShares;
-            }
-        }
     }
 }
