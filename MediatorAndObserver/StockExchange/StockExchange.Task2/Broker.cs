@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StockExchange.Task2
 {
-    public record Offer(IPlayer Player, string StockName, int NumberOfShares);
+    public record Offer(Guid PlayerId, string StockName, int NumberOfShares);
 
     public sealed class Broker : IBroker
     {
@@ -11,7 +12,7 @@ namespace StockExchange.Task2
 
         public bool SellOffer(IPlayer player, string stockName, int numberOfShares)
         {
-            var offer = new Offer(player, stockName, numberOfShares);
+            var offer = new Offer(player.PlayerId, stockName, numberOfShares);
             var succeeded = Sell(offer);
 
             if (!succeeded)
@@ -24,7 +25,7 @@ namespace StockExchange.Task2
 
         public bool BuyOffer(IPlayer player, string stockName, int numberOfShares)
         {
-            var offer = new Offer(player, stockName, numberOfShares);
+            var offer = new Offer(player.PlayerId, stockName, numberOfShares);
             var succeeded = Buy(offer);
 
             if (!succeeded)
@@ -41,7 +42,7 @@ namespace StockExchange.Task2
             for (var i = 0; i < buyOffers.Count; i++)
             {
                 var buyOffer = buyOffers[i];
-                if (buyOffer.traded || buyOffer.offer.Player == player)
+                if (buyOffer.traded || buyOffer.offer.PlayerId == player)
                     continue;
 
                 if (buyOffer.offer.StockName == stockName
@@ -61,7 +62,7 @@ namespace StockExchange.Task2
             for (var i = 0; i < sellOffers.Count; i++)
             {
                 var buyOffer = sellOffers[i];
-                if (buyOffer.traded || buyOffer.offer.Player == player)
+                if (buyOffer.traded || buyOffer.offer.PlayerId == player)
                     continue;
 
                 if (buyOffer.offer.StockName == stockName

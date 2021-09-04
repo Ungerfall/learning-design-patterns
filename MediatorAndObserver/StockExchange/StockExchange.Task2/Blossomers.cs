@@ -11,6 +11,8 @@ namespace StockExchange.Task2
             _broker = broker ?? throw new ArgumentNullException(nameof(broker));
         }
 
+        public Guid PlayerId { get; init; }
+
         public bool SellOffer(string stockName, int numberOfShares)
         {
             return _broker.SellOffer(this, stockName, numberOfShares);

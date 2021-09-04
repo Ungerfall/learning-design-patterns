@@ -1,13 +1,15 @@
-﻿namespace StockExchange.Task2
+﻿using System;
+
+namespace StockExchange.Task2
 {
     public class StockPlayersFactory
     {
         public Players CreatePlayers()
         {
             var broker = new Broker();
-            var redSocks = new RedSocks(broker);
-            var blossomers = new Blossomers(broker);
-            var rossStones = new RossStones(broker);
+            var redSocks = new RedSocks(broker) { PlayerId = Guid.NewGuid() };
+            var blossomers = new Blossomers(broker) { PlayerId = Guid.NewGuid() };
+            var rossStones = new RossStones(broker) { PlayerId = Guid.NewGuid() };
             return new Players
             {
                 RedSocks = redSocks,
