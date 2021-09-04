@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace StockExchange.Task1
 {
@@ -7,31 +6,73 @@ namespace StockExchange.Task1
 
     public sealed class Broker : IBroker
     {
-        private readonly List<Offer> sellOffers = new();
-        private readonly List<Offer> buyOffers = new();
+        private readonly List<(Offer offer, bool traded)> sellOffers = new();
+        private readonly List<(Offer offer, bool traded)> buyOffers = new();
 
         public bool SellOffer(IPlayer player, string stockName, int numberOfShares)
         {
-            var offer = buyOffers.FirstOrDefault(x =>
-                x.Player != player
-                && x.StockName == stockName
-                && x.NumberOfShares == numberOfShares);
+            var offer = new Offer(player, stockName, numberOfShares);
+            var succeeded = Sell(offer);
 
-            sellOffers.Add(new Offer(player, stockName, numberOfShares));
+            if (!succeeded)
+            {
+                sellOffers.Add((offer, traded: false));
+            }
 
-            return offer != default;
+            return succeeded;
         }
 
         public bool BuyOffer(IPlayer player, string stockName, int numberOfShares)
         {
-            var offer = sellOffers.FirstOrDefault(x =>
-                x.Player != player
-                && x.StockName == stockName
-                && x.NumberOfShares == numberOfShares);
+            var offer = new Offer(player, stockName, numberOfShares);
+            var succeeded = Buy(offer);
 
-            buyOffers.Add(new Offer(player, stockName, numberOfShares));
+            if (!succeeded)
+            {
+                buyOffers.Add((offer, traded: false));
+            }
 
-            return offer != default;
+            return succeeded;
+        }
+
+        private bool Sell(Offer offer)
+        {
+            var (player, stockName, numberOfShares) = offer;
+            for (var i = 0; i < buyOffers.Count; i++)
+            {
+                var buyOffer = buyOffers[i];
+                if (buyOffer.traded || buyOffer.offer.Player == player)
+                    continue;
+
+                if (buyOffer.offer.StockName == stockName
+                    && buyOffer.offer.NumberOfShares == numberOfShares)
+                {
+                    buyOffer.traded = true;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool Buy(Offer offer)
+        {
+            var (player, stockName, numberOfShares) = offer;
+            for (var i = 0; i < sellOffers.Count; i++)
+            {
+                var buyOffer = sellOffers[i];
+                if (buyOffer.traded || buyOffer.offer.Player == player)
+                    continue;
+
+                if (buyOffer.offer.StockName == stockName
+                    && buyOffer.offer.NumberOfShares == numberOfShares)
+                {
+                    buyOffer.traded = true;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
