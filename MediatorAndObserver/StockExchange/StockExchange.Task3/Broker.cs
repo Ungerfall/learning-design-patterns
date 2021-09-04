@@ -21,10 +21,6 @@ namespace StockExchange.Task3
             {
                 sellOffers.Add((offer, traded: false));
             }
-            else
-            {
-                NotifySucceededOffer(offer);
-            }
 
             return succeeded;
         }
@@ -37,10 +33,6 @@ namespace StockExchange.Task3
             if (!succeeded)
             {
                 buyOffers.Add((offer, traded: false));
-            }
-            else
-            {
-                NotifySucceededOffer(offer);
             }
 
             return succeeded;
@@ -59,6 +51,7 @@ namespace StockExchange.Task3
                     && buyOffer.NumberOfShares == numberOfShares)
                 {
                     buyOffers[i] = (buyOffer, traded: true);
+                    NotifySucceededOffer(sellOffer);
                     NotifySucceededOffer(buyOffer);
                     return true;
                 }
@@ -81,6 +74,7 @@ namespace StockExchange.Task3
                 {
                     sellOffers[i] = (sellOffer, traded: true);
                     NotifySucceededOffer(sellOffer);
+                    NotifySucceededOffer(buyOffer);
                     return true;
                 }
             }
@@ -108,7 +102,7 @@ namespace StockExchange.Task3
 
         private class Unsubscriber : IDisposable
         {
-            private List<IObserver<Offer>>_observers;
+            private List<IObserver<Offer>> _observers;
             private IObserver<Offer> _observer;
 
             public Unsubscriber(List<IObserver<Offer>> observers, IObserver<Offer> observer)
