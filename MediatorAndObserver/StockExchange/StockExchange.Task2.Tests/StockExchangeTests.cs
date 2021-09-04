@@ -8,7 +8,7 @@ namespace StockExchange.Task2.Tests
     {
         StockPlayersFactory playersFactory;
         RedSocks redSocks;
-        Blossomers blossomers;
+        RossStones blossomers;
 
         [TestInitialize]
         public void Startup()
@@ -18,7 +18,7 @@ namespace StockExchange.Task2.Tests
             var players = playersFactory.CreatePlayers();
 
             redSocks = players.RedSocks;
-            blossomers = players.Blossomers;
+            blossomers = players.RossStones;
         }
 
         [TestMethod]
