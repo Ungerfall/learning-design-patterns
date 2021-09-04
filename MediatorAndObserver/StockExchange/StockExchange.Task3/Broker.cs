@@ -5,10 +5,12 @@ namespace StockExchange.Task3
 {
     public record Offer(Guid PlayerId, string StockName, int NumberOfShares, bool isBuy);
 
-    public sealed class Broker : IBroker
+    public sealed class Broker : IBroker, IObservable<Offer>
     {
         private readonly List<(Offer offer, bool traded)> sellOffers = new();
         private readonly List<(Offer offer, bool traded)> buyOffers = new();
+
+        private readonly List<IObserver<Offer>> observers = new();
 
         public bool SellOffer(IPlayer player, string stockName, int numberOfShares)
         {
@@ -18,6 +20,10 @@ namespace StockExchange.Task3
             if (!succeeded)
             {
                 sellOffers.Add((offer, traded: false));
+            }
+            else
+            {
+                NotifySucceededOffer(offer);
             }
 
             return succeeded;
@@ -32,23 +38,28 @@ namespace StockExchange.Task3
             {
                 buyOffers.Add((offer, traded: false));
             }
+            else
+            {
+                NotifySucceededOffer(offer);
+            }
 
             return succeeded;
         }
 
-        private bool Sell(Offer offer)
+        private bool Sell(Offer sellOffer)
         {
-            var (player, stockName, numberOfShares, _) = offer;
+            var (player, stockName, numberOfShares, _) = sellOffer;
             for (var i = 0; i < buyOffers.Count; i++)
             {
-                var buyOffer = buyOffers[i];
-                if (buyOffer.traded || buyOffer.offer.PlayerId == player)
+                var (buyOffer, traded) = buyOffers[i];
+                if (traded || buyOffer.PlayerId == player)
                     continue;
 
-                if (buyOffer.offer.StockName == stockName
-                    && buyOffer.offer.NumberOfShares == numberOfShares)
+                if (buyOffer.StockName == stockName
+                    && buyOffer.NumberOfShares == numberOfShares)
                 {
-                    buyOffer.traded = true;
+                    buyOffers[i] = (buyOffer, traded: true);
+                    NotifySucceededOffer(buyOffer);
                     return true;
                 }
             }
@@ -56,24 +67,61 @@ namespace StockExchange.Task3
             return false;
         }
 
-        private bool Buy(Offer offer)
+        private bool Buy(Offer buyOffer)
         {
-            var (player, stockName, numberOfShares, _) = offer;
+            var (player, stockName, numberOfShares, _) = buyOffer;
             for (var i = 0; i < sellOffers.Count; i++)
             {
-                var buyOffer = sellOffers[i];
-                if (buyOffer.traded || buyOffer.offer.PlayerId == player)
+                var (sellOffer, traded) = sellOffers[i];
+                if (traded || sellOffer.PlayerId == player)
                     continue;
 
-                if (buyOffer.offer.StockName == stockName
-                    && buyOffer.offer.NumberOfShares == numberOfShares)
+                if (sellOffer.StockName == stockName
+                    && sellOffer.NumberOfShares == numberOfShares)
                 {
-                    buyOffer.traded = true;
+                    sellOffers[i] = (sellOffer, traded: true);
+                    NotifySucceededOffer(sellOffer);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public IDisposable Subscribe(IObserver<Offer> observer)
+        {
+            if (!observers.Contains(observer))
+            {
+                observers.Add(observer);
+            }
+
+            return new Unsubscriber(observers, observer);
+        }
+
+        private void NotifySucceededOffer(Offer offer)
+        {
+            foreach (var observer in observers)
+            {
+                observer.OnNext(offer);
+            }
+        }
+
+        private class Unsubscriber : IDisposable
+        {
+            private List<IObserver<Offer>>_observers;
+            private IObserver<Offer> _observer;
+
+            public Unsubscriber(List<IObserver<Offer>> observers, IObserver<Offer> observer)
+            {
+                _observers = observers;
+                _observer = observer;
+            }
+
+            public void Dispose()
+            {
+                if (_observer != null && _observers.Contains(_observer))
+                    _observers.Remove(_observer);
+            }
         }
     }
 }

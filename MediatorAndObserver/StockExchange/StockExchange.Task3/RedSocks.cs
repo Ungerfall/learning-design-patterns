@@ -2,7 +2,7 @@
 
 namespace StockExchange.Task3
 {
-    public class RedSocks : IPlayer
+    public class RedSocks : IPlayer, IObserver<Offer>
     {
         private readonly IBroker _broker;
 
@@ -23,7 +23,33 @@ namespace StockExchange.Task3
             return _broker.BuyOffer(this, stockName, numberOfShares);
         }
 
-        public int SoldShares { get; }
-        public int BoughtShares { get; }
+        public int SoldShares { get; private set; } = 0;
+        public int BoughtShares { get; private set; } = 0;
+
+        public void OnCompleted()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnError(Exception error)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnNext(Offer value)
+        {
+            var (playerId, _, numberOfShares, isBuy) = value;
+            if (playerId != PlayerId)
+                return;
+
+            if (isBuy)
+            {
+                BoughtShares += numberOfShares;
+            }
+            else
+            {
+                SoldShares += numberOfShares;
+            }
+        }
     }
 }
