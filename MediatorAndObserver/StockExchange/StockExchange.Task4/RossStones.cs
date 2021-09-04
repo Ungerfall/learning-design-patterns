@@ -2,11 +2,11 @@
 
 namespace StockExchange.Task4
 {
-    public class RedSocks : IPlayer, IObserver<Offer>
+    public class RossStones : IPlayer, IObserver<Offer>
     {
         private readonly IBroker _broker;
 
-        public RedSocks(IBroker broker)
+        public RossStones(IBroker broker)
         {
             _broker = broker ?? throw new ArgumentNullException(nameof(broker));
         }
