@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StockExchange.Task3
 {
-    public record Offer(Guid PlayerId, string StockName, int NumberOfShares);
+    public record Offer(Guid PlayerId, string StockName, int NumberOfShares, bool isBuy);
 
     public sealed class Broker : IBroker
     {
@@ -12,7 +12,7 @@ namespace StockExchange.Task3
 
         public bool SellOffer(IPlayer player, string stockName, int numberOfShares)
         {
-            var offer = new Offer(player.PlayerId, stockName, numberOfShares);
+            var offer = new Offer(player.PlayerId, stockName, numberOfShares, isBuy: false);
             var succeeded = Sell(offer);
 
             if (!succeeded)
@@ -25,7 +25,7 @@ namespace StockExchange.Task3
 
         public bool BuyOffer(IPlayer player, string stockName, int numberOfShares)
         {
-            var offer = new Offer(player.PlayerId, stockName, numberOfShares);
+            var offer = new Offer(player.PlayerId, stockName, numberOfShares, isBuy: true);
             var succeeded = Buy(offer);
 
             if (!succeeded)
@@ -38,7 +38,7 @@ namespace StockExchange.Task3
 
         private bool Sell(Offer offer)
         {
-            var (player, stockName, numberOfShares) = offer;
+            var (player, stockName, numberOfShares, _) = offer;
             for (var i = 0; i < buyOffers.Count; i++)
             {
                 var buyOffer = buyOffers[i];
@@ -58,7 +58,7 @@ namespace StockExchange.Task3
 
         private bool Buy(Offer offer)
         {
-            var (player, stockName, numberOfShares) = offer;
+            var (player, stockName, numberOfShares, _) = offer;
             for (var i = 0; i < sellOffers.Count; i++)
             {
                 var buyOffer = sellOffers[i];
