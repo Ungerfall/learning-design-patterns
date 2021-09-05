@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoolerProductFormatter.cs" />
     <Compile Include="DefaultProductFormatter.cs" />
     <Compile Include="IProductsFormatter.cs" />
     <Compile Include="Product.cs" />

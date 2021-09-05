@@ -61,6 +61,33 @@ namespace ProductsViewer.Core.Tests
 			#endregion
 		}
 
+        [Test]
+        public void Show_Cooler()
+        {
+			#region Arrange
+
+			var productsContainer = new ProductsContainer(new CoolerProductFormatter())
+				.Add(1, "Product 1")
+				.Add(2, "Product 2");
+
+			#endregion
+
+			#region Act
+
+			var result = productsContainer.Show();
+
+			#endregion
+
+			#region Assert
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(result, Is.Not.Empty);
+			Assert.That(result, Is.EqualTo("PRODUCTS_#1:'Product 1'_#2:'Product 2';"));
+
+			#endregion
+
+        }
+
 		#endregion
 	}
 }
