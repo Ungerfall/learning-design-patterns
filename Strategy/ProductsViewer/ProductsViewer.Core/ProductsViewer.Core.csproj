@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultProductFormatter.cs" />
+    <Compile Include="IProductsFormatter.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductsContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

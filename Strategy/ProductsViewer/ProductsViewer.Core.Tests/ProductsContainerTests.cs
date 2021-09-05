@@ -13,7 +13,7 @@ namespace ProductsViewer.Core.Tests
 		{
 			#region Arrange
 
-			var productsContainer = new ProductsContainer();
+            var productsContainer = new ProductsContainer(new DefaultProductFormatter());
 
 			#endregion
 
@@ -40,7 +40,7 @@ namespace ProductsViewer.Core.Tests
 		{
 			#region Arrange
 
-			var productsContainer = new ProductsContainer()
+			var productsContainer = new ProductsContainer(new DefaultProductFormatter())
 				.Add(1, "Product 1")
 				.Add(2, "Product 2");
 
