@@ -13,7 +13,37 @@ namespace TemplateMethod.Task1
 
         public void CookMasala(Country country)
         {
-            throw new NotImplementedException();
+            IMasala masala = country switch
+            {
+                Country.Ukraine => new UkrainianMasala(),
+                Country.India => new IndianMasala(),
+                _ => throw new ArgumentOutOfRangeException(nameof(country), country, null)
+            };
+            var recipe = masala.PrepareRecipe();
+
+            cooker.FryChicken(recipe.ChickenAmount, recipe.ChickenFryLevel);
+            if (recipe.ChickenSaltLevel != null)
+            {
+                cooker.SaltChicken(recipe.ChickenSaltLevel.Value);
+            }
+
+            if (recipe.ChickenPepperLevel != null)
+            {
+                cooker.PepperChicken(recipe.ChickenPepperLevel.Value);
+            }
+
+            cooker.FryRice(recipe.RiceAmount, recipe.RiceFryLevel);
+            if (recipe.RiceSaltLevel != null)
+            {
+                cooker.SaltRice(recipe.RiceSaltLevel.Value);
+            }
+
+            if (recipe.RicePepperLevel != null)
+            {
+                cooker.PepperRice(recipe.RicePepperLevel.Value);
+            }
+
+            cooker.PrepareTea(recipe.TeaAmount, recipe.TeaKind, recipe.TeaHoneyAmount);
         }
     }
 }
