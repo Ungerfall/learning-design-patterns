@@ -2,9 +2,9 @@
 
 namespace FilesAllocator.Core
 {
-    internal class ProcessedFile
+    internal class File
     {
-        public ProcessedFile(string filePath)
+        public File(string filePath)
         {
             FileInfo = new FileInfo(filePath);
             InitFullName = FileInfo.FullName;

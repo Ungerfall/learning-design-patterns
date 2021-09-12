@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using File = FilesAllocator.Core.File;
 
 namespace FilesAllocator.CoreTest
 {
@@ -26,7 +27,7 @@ namespace FilesAllocator.CoreTest
 
 			#region Act
 
-			var file = new ProcessedFile(filePath);
+			var file = new File(filePath);
 
 			#endregion
 
@@ -48,7 +49,7 @@ namespace FilesAllocator.CoreTest
 			#region Arrange
 
 			var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFolder", "Input", "DSC00015.JPG");
-			var file = new ProcessedFile(filePath);
+			var file = new File(filePath);
 			var endpointDirectory = "Test";
 			var newName = "NewName.jpg";
 

@@ -9,7 +9,7 @@ namespace FilesAllocator.Core
 {
     public class Allocator : IAllocator
     {
-        private List<ProcessedFile> _files = new List<ProcessedFile>();
+        private List<File> _files = new List<File>();
 
         /// <summary>
         /// Copying files from inputDirectory to outputDirectory
@@ -29,7 +29,7 @@ namespace FilesAllocator.Core
             string[] filteredExtensions = null)
         {
             var inputFiles = GetFilesByDirectory(inputDirectory, useSubFolders);
-            _files = inputFiles.Select(f => new ProcessedFile(f)).ToList();
+            _files = inputFiles.Select(f => new File(f)).ToList();
 
             if (creationDateTimePrefixName)
             {
@@ -107,7 +107,7 @@ namespace FilesAllocator.Core
                 System.IO.Directory.CreateDirectory(destDirectory);
             }
 
-            File.Copy(sourceFileName, destFileName, true);
+            System.IO.File.Copy(sourceFileName, destFileName, true);
         }
 
         /// <summary>
