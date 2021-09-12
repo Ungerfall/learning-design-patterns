@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Allocator.cs" />
+    <Compile Include="IAllocator.cs" />
     <Compile Include="ProcessedFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
