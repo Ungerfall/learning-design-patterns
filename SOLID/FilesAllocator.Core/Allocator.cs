@@ -9,8 +9,6 @@ namespace FilesAllocator.Core
 {
     public class Allocator : IAllocator
     {
-        private List<File> _files = new List<File>();
-
         /// <summary>
         /// Copying files from inputDirectory to outputDirectory
         /// </summary>
@@ -29,27 +27,27 @@ namespace FilesAllocator.Core
             string[] filteredExtensions = null)
         {
             var inputFiles = GetFilesByDirectory(inputDirectory, useSubFolders);
-            _files = inputFiles.Select(f => new File(f)).ToList();
+            var files = inputFiles.Select(f => new File(f)).ToList();
 
             if (creationDateTimePrefixName)
             {
-                AddCreationDatePrefixForFilename();
+                AddCreationDatePrefixForFilename(files);
             }
 
             if (groupByCreationDateHandler)
             {
-                GroupByCreationDate();
+                GroupByCreationDate(files);
             }
 
             if (filteredExtensions?.Length > 0)
             {
-                FilteredExtensions(filteredExtensions);
+                FilteredExtensions(files, filteredExtensions);
             }
 
-            RenameDuplicateFiles();
+            RenameDuplicateFiles(files);
 
             var result = 0;
-            foreach (var file in _files)
+            foreach (var file in files)
             {
                 var newFullName = Path.Combine(outputDirectory, file.EndpointFullName);
 
@@ -113,11 +111,12 @@ namespace FilesAllocator.Core
         /// <summary>
         /// Add GUID as postfix of filename for duplicated files
         /// </summary>
-        private void RenameDuplicateFiles()
+        /// <param name="files"></param>
+        private void RenameDuplicateFiles(ICollection<File> files)
         {
-            foreach (var file in _files)
+            foreach (var file in files)
             {
-                var hasDuplicate = _files.Count(f => f.EndpointFullName.Equals(file.EndpointFullName)) > 1;
+                var hasDuplicate = files.Count(f => f.EndpointFullName.Equals(file.EndpointFullName)) > 1;
                 if (!hasDuplicate) continue;
 
                 var fileName = file.Name;
@@ -130,9 +129,10 @@ namespace FilesAllocator.Core
         /// <summary>
         /// Add the creation date of file as prefix for filename
         /// </summary>
-        private void AddCreationDatePrefixForFilename()
+        /// <param name="files"></param>
+        private void AddCreationDatePrefixForFilename(ICollection<File> files)
         {
-            foreach (var file in _files)
+            foreach (var file in files)
             {
                 DateTime? dateTaken;
                 try
@@ -156,9 +156,9 @@ namespace FilesAllocator.Core
         /// <summary>
         /// Group files into directories by the creation date
         /// </summary>
-        private void GroupByCreationDate()
+        private void GroupByCreationDate(ICollection<File> files)
         {
-            foreach (var file in _files)
+            foreach (var file in files)
             {
                 DateTime? dateTaken;
                 try
@@ -184,10 +184,11 @@ namespace FilesAllocator.Core
         /// <summary>
         /// Filter files by extensions
         /// </summary>
+        /// <param name="files"></param>
         /// <param name="extensions"></param>
-        private void FilteredExtensions(string[] extensions)
+        private void FilteredExtensions(ICollection<File> files, string[] extensions)
         {
-            var removingFiles = _files
+            var removingFiles = files
                 .Where(f =>
                 {
                     var fileExtension = f.FileInfo.Extension.Replace(".", string.Empty);
@@ -197,7 +198,7 @@ namespace FilesAllocator.Core
 
             foreach (var file in removingFiles)
             {
-                _files.Remove(file);
+                files.Remove(file);
             }
         }
     }
