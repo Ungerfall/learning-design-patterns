@@ -2,35 +2,27 @@
 
 namespace FilesAllocator.Core
 {
-	public class ProcessedFile
-	{
-		#region Constructors
+    internal class ProcessedFile
+    {
+        public ProcessedFile(string filePath)
+        {
+            FileInfo = new FileInfo(filePath);
+            InitFullName = FileInfo.FullName;
+            Name = FileInfo.Name;
+            EndpointDirectory = string.Empty;
+        }
 
-		public ProcessedFile(string filePath)
-		{
-			FileInfo = new FileInfo(filePath);
-			InitFullName = FileInfo.FullName;
-			Name = FileInfo.Name;
-			EndpointDirectory = string.Empty;
-		}
+        public FileInfo FileInfo { get; }
 
-		#endregion
+        public string InitFullName { get; }
 
-		#region Public properties
+        public string Name { get; set; }
 
-		public FileInfo FileInfo { get; }
+        public string EndpointDirectory { get; set; }
 
-		public string InitFullName { get; }
-
-		public string Name { get; set; }
-
-		public string EndpointDirectory { get; set; }
-
-		public string EndpointFullName =>
-			Path.Combine(
-				EndpointDirectory ?? string.Empty,
-				Name);
-
-		#endregion
-	}
+        public string EndpointFullName =>
+            Path.Combine(
+                EndpointDirectory ?? string.Empty,
+                Name);
+    }
 }
