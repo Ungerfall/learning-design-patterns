@@ -2,6 +2,7 @@
 
 namespace StockExchange.Task2
 {
+    // TODO Дублирование кода во всех реализациях IPlayer
     public class Blossomers : IPlayer
     {
         private readonly IBroker _broker;
