@@ -84,7 +84,7 @@ namespace StockExchange.Task4
 
         private void OnOfferSucceeded(Offer offer)
         {
-            OfferSucceeded?.Invoke(this, new OfferEventArgs { Offer = offer }); // TODO Уведомление о событии получают даже те, кто его получать не должен
+            OfferSucceeded?.Invoke(this, new OfferEventArgs { Offer = offer });
         }
     }
 }

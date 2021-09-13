@@ -1,26 +1,9 @@
-﻿using System;
-
-namespace StockExchange.Task2
+﻿namespace StockExchange.Task2
 {
-    public class RossStones : IPlayer
+    public class RossStones : Player
     {
-        private readonly IBroker _broker;
-
-        public RossStones(IBroker broker)
+        public RossStones(IBroker broker) : base(broker)
         {
-            _broker = broker ?? throw new ArgumentNullException(nameof(broker));
-        }
-
-        public Guid PlayerId { get; init; }
-
-        public bool SellOffer(string stockName, int numberOfShares)
-        {
-            return _broker.SellOffer(this, stockName, numberOfShares);
-        }
-
-        public bool BuyOffer(string stockName, int numberOfShares)
-        {
-            return _broker.BuyOffer(this, stockName, numberOfShares);
         }
     }
 }

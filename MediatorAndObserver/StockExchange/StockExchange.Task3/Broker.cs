@@ -94,7 +94,7 @@ namespace StockExchange.Task3
 
         private void NotifySucceededOffer(Offer offer)
         {
-            foreach (var observer in observers) // TODO Уведомление рассылается всем игрокам, а должно только участникам конкретной сделки
+            foreach (var observer in observers)
             {
                 observer.OnNext(offer);
             }
