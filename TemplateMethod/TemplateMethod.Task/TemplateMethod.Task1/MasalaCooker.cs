@@ -21,6 +21,7 @@ namespace TemplateMethod.Task1
             };
             var recipe = masala.PrepareRecipe();
 
+            // TODO Все, что ниже, должно быть описано в рецепте масалы. Это не логика повара
             cooker.FryChicken(recipe.ChickenAmount, recipe.ChickenFryLevel);
             if (recipe.ChickenSaltLevel != null)
             {
