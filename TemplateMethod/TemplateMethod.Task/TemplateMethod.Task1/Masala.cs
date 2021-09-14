@@ -2,30 +2,22 @@
 {
     public abstract class Masala : IMasala
     {
-        public MasalaRecipe PrepareRecipe()
+        public void PrepareRecipe(ICooker cooker)
         {
-            var (chicken, chickenFry, chickenSalt, chickenPepper) = PrepareChicken();
-            var (rice, riceFry, riceSalt, ricePepper) = PrepareRice();
-            var (tea, teaKind, honey) = PrepareTea();
-
-            return new MasalaRecipe
-            {
-                ChickenAmount = chicken,
-                ChickenFryLevel = chickenFry,
-                ChickenSaltLevel = chickenSalt,
-                ChickenPepperLevel = chickenPepper,
-                RiceAmount = rice,
-                RiceFryLevel = riceFry,
-                RiceSaltLevel = riceSalt,
-                RicePepperLevel = ricePepper,
-                TeaAmount = tea,
-                TeaKind = teaKind,
-                TeaHoneyAmount = honey
-            };
+            cooker.FryChicken(ChickenAmount, ChickenFryLevel);
+            cooker.FryRice(RiceAmount, RiceFryLevel);
+            cooker.PrepareTea(TeaAmount, TeaKind, TeaHoneyAmount);
+            AddSeasoning(cooker);
         }
 
-        protected abstract (int amount, Level fry, Level? salt, Level? pepper) PrepareChicken();
-        protected abstract (int amount, Level fry, Level? salt, Level? pepper) PrepareRice();
-        protected abstract (int amount, TeaKind kind, int honey) PrepareTea();
+        protected abstract int ChickenAmount { get; }
+        protected abstract Level ChickenFryLevel { get; }
+        protected abstract int RiceAmount { get; }
+        protected abstract Level RiceFryLevel { get; }
+        protected abstract int TeaAmount { get; }
+        protected abstract TeaKind TeaKind { get; }
+        protected abstract int TeaHoneyAmount { get; }
+
+        protected abstract void AddSeasoning(ICooker cooker);
     }
 }

@@ -2,19 +2,20 @@
 {
     public class UkrainianMasala : Masala
     {
-        protected override (int amount, Level fry, Level? salt, Level? pepper) PrepareChicken()
-        {
-            return (300, Level.Medium, Level.Medium, Level.Low);
-        }
+        protected override int ChickenAmount => 300;
+        protected override Level ChickenFryLevel => Level.Medium;
+        protected override int RiceAmount => 500;
+        protected override Level RiceFryLevel => Level.Strong;
+        protected override int TeaAmount => 10;
+        protected override TeaKind TeaKind => TeaKind.Black;
+        protected override int TeaHoneyAmount => 10;
 
-        protected override (int amount, Level fry, Level? salt, Level? pepper) PrepareRice()
+        protected override void AddSeasoning(ICooker cooker)
         {
-            return (500, Level.Strong, Level.Strong, Level.Low);
-        }
-
-        protected override (int amount, TeaKind kind, int honey) PrepareTea()
-        {
-            return (10, TeaKind.Black, 10);
+            cooker.SaltChicken(Level.Medium);
+            cooker.PepperChicken(Level.Low);
+            cooker.SaltRice(Level.Strong);
+            cooker.PepperRice(Level.Low);
         }
     }
 }

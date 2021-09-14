@@ -2,6 +2,6 @@
 {
     public interface IMasala
     {
-        public MasalaRecipe PrepareRecipe();
+        public void PrepareRecipe(ICooker cooker);
     }
 }
