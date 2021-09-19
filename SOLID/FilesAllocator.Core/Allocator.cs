@@ -49,7 +49,7 @@ namespace FilesAllocator.Core
                     FilteredExtensions(files, filteredExtensions);
                 }
 
-                RenameDuplicateFiles(files);
+                fileCopier = new FileCopierWithRenamingDuplicates(fileCopier);
 
                 return fileCopier.Copy(files);
             }
@@ -74,24 +74,6 @@ namespace FilesAllocator.Core
             catch (Exception e)
             {
                 throw new AllocatorException("See inner exception for details", e);
-            }
-        }
-
-        /// <summary>
-        /// Add GUID as postfix of filename for duplicated files
-        /// </summary>
-        /// <param name="files"></param>
-        private void RenameDuplicateFiles(ICollection<File> files)
-        {
-            foreach (var file in files)
-            {
-                var hasDuplicate = files.Count(f => f.EndpointFullName.Equals(file.EndpointFullName)) > 1;
-                if (!hasDuplicate) continue;
-
-                var fileName = file.Name;
-                var uniqueString = $"_{Guid.NewGuid():N}";
-                var uniqueFileName = fileName.Insert(fileName.Length - file.FileInfo.Extension.Length, uniqueString);
-                file.Name = uniqueFileName;
             }
         }
 
