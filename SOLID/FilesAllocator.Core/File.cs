@@ -4,12 +4,16 @@ namespace FilesAllocator.Core
 {
     internal class File
     {
-        public File(string filePath)
+        public File(string filePath) : this(filePath, endpointDirectory: string.Empty)
+        {
+        }
+
+        public File(string filePath, string endpointDirectory)
         {
             FileInfo = new FileInfo(filePath);
             InitFullName = FileInfo.FullName;
             Name = FileInfo.Name;
-            EndpointDirectory = string.Empty;
+            EndpointDirectory = endpointDirectory;
         }
 
         public FileInfo FileInfo { get; }
