@@ -43,7 +43,7 @@ namespace FilesAllocator.Core
 
                 if (filteredExtensions?.Length > 0)
                 {
-                    FilteredExtensions(files, filteredExtensions);
+                    fileCopier = new FileCopierWithExtensionsFilter(fileCopier, filteredExtensions);
                 }
 
                 fileCopier = new FileCopierWithRenamingDuplicates(fileCopier);
@@ -71,27 +71,6 @@ namespace FilesAllocator.Core
             catch (Exception e)
             {
                 throw new AllocatorException("See inner exception for details", e);
-            }
-        }
-
-        /// <summary>
-        /// Filter files by extensions
-        /// </summary>
-        /// <param name="files"></param>
-        /// <param name="extensions"></param>
-        private void FilteredExtensions(ICollection<File> files, string[] extensions)
-        {
-            var removingFiles = files
-                .Where(f =>
-                {
-                    var fileExtension = f.FileInfo.Extension.Replace(".", string.Empty);
-                    return !extensions.Any(e => e.ToUpper().Equals(fileExtension.ToUpper()));
-                })
-                .ToArray();
-
-            foreach (var file in removingFiles)
-            {
-                files.Remove(file);
             }
         }
     }
