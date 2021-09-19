@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="Allocator.cs" />
     <Compile Include="AllocatorException.cs" />
-    <Compile Include="DirectoryUtils.cs" />
+    <Compile Include="Utils\DirectoryUtils.cs" />
     <Compile Include="FileCopier.cs" />
     <Compile Include="FileCopierDecorators\FileCopierWithCreationDatePrefixFilename.cs" />
     <Compile Include="FileCopierDecorators\FileCopierWithExtensionsFilter.cs" />
@@ -58,6 +58,7 @@
     <Compile Include="IAllocator.cs" />
     <Compile Include="File.cs" />
     <Compile Include="IFileCopier.cs" />
+    <Compile Include="Utils\MetadataExtractorUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

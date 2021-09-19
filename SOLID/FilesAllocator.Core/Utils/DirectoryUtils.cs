@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FilesAllocator.Core
+namespace FilesAllocator.Core.Utils
 {
     internal class DirectoryUtils
     {
