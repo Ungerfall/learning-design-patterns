@@ -49,6 +49,9 @@
   <ItemGroup>
     <Compile Include="Allocator.cs" />
     <Compile Include="AllocatorException.cs" />
+    <Compile Include="Grouping\GroupByCreationDate.cs" />
+    <Compile Include="Grouping\GroupByExtension.cs" />
+    <Compile Include="Grouping\IGroupingStrategy.cs" />
     <Compile Include="Utils\DirectoryUtils.cs" />
     <Compile Include="FileCopier.cs" />
     <Compile Include="FileCopierDecorators\FileCopierWithCreationDatePrefixFilename.cs" />

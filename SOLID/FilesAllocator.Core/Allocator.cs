@@ -1,8 +1,9 @@
 ﻿using FilesAllocator.Core.FileCopierDecorators;
+using FilesAllocator.Core.Grouping;
+using FilesAllocator.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FilesAllocator.Core.Utils;
 
 namespace FilesAllocator.Core
 {
@@ -39,7 +40,11 @@ namespace FilesAllocator.Core
 
                 if (groupByCreationDateHandler)
                 {
-                    fileCopier = new FileCopierWithGrouping(fileCopier);
+                    var groupings = new SortedList<int, IGroupingStrategy>
+                    {
+                        {1, new GroupByCreationDate()}
+                    };
+                    fileCopier = new FileCopierWithGrouping(fileCopier, groupings);
                 }
 
                 if (filteredExtensions?.Length > 0)

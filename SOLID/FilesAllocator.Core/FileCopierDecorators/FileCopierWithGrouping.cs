@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using FilesAllocator.Core.Utils;
+using FilesAllocator.Core.Grouping;
 
 namespace FilesAllocator.Core.FileCopierDecorators
 {
     internal class FileCopierWithGrouping : IFileCopier
     {
         private readonly IFileCopier @base;
+        private readonly SortedList<int, IGroupingStrategy> groupingStrategies;
 
-        public FileCopierWithGrouping(IFileCopier @base)
+        public FileCopierWithGrouping(IFileCopier @base, SortedList<int, IGroupingStrategy> groupingStrategies)
         {
             this.@base = @base;
+            this.groupingStrategies = groupingStrategies;
         }
 
         public int Copy(ICollection<File> files)
@@ -22,18 +24,17 @@ namespace FilesAllocator.Core.FileCopierDecorators
         /// <summary>
         /// Group files into directories by the creation date
         /// </summary>
-        private static void GroupByCreationDate(ICollection<File> files)
+        private void GroupByCreationDate(ICollection<File> files)
         {
             foreach (var file in files)
             {
-                var dateTaken = file.GetMetadataDateTime();
-
-                var createDateTime = dateTaken ?? file.FileInfo.CreationTime;
-                var newFilePath = createDateTime.ToString("yyyy-MM-dd");
-
-                file.EndpointDirectory = Path.Combine(
-                    file.EndpointDirectory ?? string.Empty,
-                    newFilePath);
+                foreach (var groupingStrategy in groupingStrategies.Values)
+                {
+                    var groupingFolder = groupingStrategy.GetGroupingFolderName(file);
+                    file.EndpointDirectory = Path.Combine(
+                        file.EndpointDirectory ?? string.Empty,
+                        groupingFolder);
+                }
             }
         }
     }
