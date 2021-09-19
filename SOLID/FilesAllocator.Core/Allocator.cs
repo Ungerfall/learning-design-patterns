@@ -1,4 +1,5 @@
-﻿using MetadataExtractor;
+﻿using FilesAllocator.Core.FileCopierDecorators;
+using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,6 @@ namespace FilesAllocator.Core
 {
     public sealed class Allocator : IAllocator
     {
-        private readonly IFileCopier fileCopier = new FileCopier();
-
         /// <summary>
         /// Copying files from inputDirectory to outputDirectory
         /// </summary>
@@ -30,12 +29,14 @@ namespace FilesAllocator.Core
         {
             try
             {
-                var inputFiles = GetFilesByDirectory(inputDirectory, useSubFolders);
-                var files = inputFiles.Select(f => new File(f)).ToList();
+                IFileCopier fileCopier = new FileCopier();
+
+                var inputFiles = DirectoryUtils.GetFilesByDirectory(inputDirectory, useSubFolders);
+                var files = inputFiles.Select(f => new File(f, outputDirectory)).ToList();
 
                 if (creationDateTimePrefixName)
                 {
-                    AddCreationDatePrefixForFilename(files);
+                    fileCopier = new FileCopierWithCreationDatePrefixFilename(fileCopier);
                 }
 
                 if (groupByCreationDateHandler)
@@ -50,15 +51,7 @@ namespace FilesAllocator.Core
 
                 RenameDuplicateFiles(files);
 
-                var result = 0;
-                foreach (var file in files)
-                {
-                    var newFullName = Path.Combine(outputDirectory, file.EndpointFullName);
-                    fileCopier.CopyFile(file.InitFullName, newFullName);
-                    result++;
-                }
-
-                return result;
+                return fileCopier.Copy(files);
             }
             catch (Exception e)
             {
@@ -85,23 +78,6 @@ namespace FilesAllocator.Core
         }
 
         /// <summary>
-        /// Copy file from source to destination
-        /// </summary>
-        /// <param name="sourceFileName">Source filename</param>
-        /// <param name="destFileName">Destination filename</param>
-        public void CopyFile(string sourceFileName, string destFileName)
-        {
-            try
-            {
-                fileCopier.CopyFile(sourceFileName, destFileName);
-            }
-            catch (Exception e)
-            {
-                throw new AllocatorException("See inner exception for details", e);
-            }
-        }
-
-        /// <summary>
         /// Add GUID as postfix of filename for duplicated files
         /// </summary>
         /// <param name="files"></param>
@@ -116,33 +92,6 @@ namespace FilesAllocator.Core
                 var uniqueString = $"_{Guid.NewGuid():N}";
                 var uniqueFileName = fileName.Insert(fileName.Length - file.FileInfo.Extension.Length, uniqueString);
                 file.Name = uniqueFileName;
-            }
-        }
-
-        /// <summary>
-        /// Add the creation date of file as prefix for filename
-        /// </summary>
-        /// <param name="files"></param>
-        private void AddCreationDatePrefixForFilename(ICollection<File> files)
-        {
-            foreach (var file in files)
-            {
-                DateTime? dateTaken;
-                try
-                {
-                    var directories = ImageMetadataReader.ReadMetadata(file.FileInfo.FullName);
-                    var subIfdDirectory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
-                    dateTaken = subIfdDirectory?.GetDateTime(ExifDirectoryBase.TagDateTimeOriginal);
-                }
-                catch (ImageProcessingException)
-                {
-                    dateTaken = null;
-                }
-
-                var createDateTime = dateTaken ?? file.FileInfo.CreationTime;
-                var createDate = createDateTime.ToString("yyyyMMdd");
-                var createTime = createDateTime.ToString("HHmmss");
-                file.Name = $"{createDate}-{createTime}_{file.Name}";
             }
         }
 

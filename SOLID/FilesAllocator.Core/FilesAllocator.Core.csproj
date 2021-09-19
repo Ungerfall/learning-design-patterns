@@ -50,7 +50,9 @@
     <Compile Include="Allocator.cs" />
     <Compile Include="AllocatorException.cs" />
     <Compile Include="DirectoryUtils.cs" />
-    <Compile Include="FileNameDecorators\IFileNameDecorator.cs" />
+    <Compile Include="FileCopier.cs" />
+    <Compile Include="FileCopierDecorators\FileCopierWithCreationDatePrefixFilename.cs" />
+    <Compile Include="FileCopierDecorators\FileCopierWithRenamingDuplicates.cs" />
     <Compile Include="IAllocator.cs" />
     <Compile Include="File.cs" />
     <Compile Include="IFileCopier.cs" />
