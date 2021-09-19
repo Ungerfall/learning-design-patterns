@@ -48,8 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Allocator.cs" />
+    <Compile Include="AllocatorException.cs" />
+    <Compile Include="DirectoryUtils.cs" />
+    <Compile Include="FileNameDecorators\IFileNameDecorator.cs" />
     <Compile Include="IAllocator.cs" />
     <Compile Include="File.cs" />
+    <Compile Include="IFileCopier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

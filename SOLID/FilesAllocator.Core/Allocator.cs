@@ -7,8 +7,10 @@ using System.Linq;
 
 namespace FilesAllocator.Core
 {
-    public class Allocator : IAllocator
+    public sealed class Allocator : IAllocator
     {
+        private readonly IFileCopier fileCopier = new FileCopier();
+
         /// <summary>
         /// Copying files from inputDirectory to outputDirectory
         /// </summary>
@@ -26,43 +28,42 @@ namespace FilesAllocator.Core
             bool groupByCreationDateHandler = false,
             string[] filteredExtensions = null)
         {
-            var inputFiles = GetFilesByDirectory(inputDirectory, useSubFolders);
-            var files = inputFiles.Select(f => new File(f)).ToList();
-
-            if (creationDateTimePrefixName)
+            try
             {
-                AddCreationDatePrefixForFilename(files);
-            }
+                var inputFiles = GetFilesByDirectory(inputDirectory, useSubFolders);
+                var files = inputFiles.Select(f => new File(f)).ToList();
 
-            if (groupByCreationDateHandler)
-            {
-                GroupByCreationDate(files);
-            }
-
-            if (filteredExtensions?.Length > 0)
-            {
-                FilteredExtensions(files, filteredExtensions);
-            }
-
-            RenameDuplicateFiles(files);
-
-            var result = 0;
-            foreach (var file in files)
-            {
-                var newFullName = Path.Combine(outputDirectory, file.EndpointFullName);
-
-                try
+                if (creationDateTimePrefixName)
                 {
-                    CopyFile(file.InitFullName, newFullName);
+                    AddCreationDatePrefixForFilename(files);
+                }
+
+                if (groupByCreationDateHandler)
+                {
+                    GroupByCreationDate(files);
+                }
+
+                if (filteredExtensions?.Length > 0)
+                {
+                    FilteredExtensions(files, filteredExtensions);
+                }
+
+                RenameDuplicateFiles(files);
+
+                var result = 0;
+                foreach (var file in files)
+                {
+                    var newFullName = Path.Combine(outputDirectory, file.EndpointFullName);
+                    fileCopier.CopyFile(file.InitFullName, newFullName);
                     result++;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw new AllocatorException("See inner exception for details", e);
+            }
         }
 
         /// <summary>
@@ -73,17 +74,14 @@ namespace FilesAllocator.Core
         /// <returns>List of files</returns>
         public IEnumerable<string> GetFilesByDirectory(string path, bool useSubDirectories = false)
         {
-            var files = System.IO.Directory.GetFiles(path).ToList();
-
-            if (useSubDirectories)
+            try
             {
-                foreach (var dir in System.IO.Directory.GetDirectories(path))
-                {
-                    files.AddRange(GetFilesByDirectory(dir, true));
-                }
+                return DirectoryUtils.GetFilesByDirectory(path, useSubDirectories);
             }
-
-            return files;
+            catch (Exception e)
+            {
+                throw new AllocatorException("See inner exception for details", e);
+            }
         }
 
         /// <summary>
@@ -93,19 +91,14 @@ namespace FilesAllocator.Core
         /// <param name="destFileName">Destination filename</param>
         public void CopyFile(string sourceFileName, string destFileName)
         {
-            var destDirectory = Path.GetDirectoryName(destFileName);
-
-            if (destDirectory == null)
+            try
             {
-                throw new NullReferenceException("Cannot get destination directory.");
+                fileCopier.CopyFile(sourceFileName, destFileName);
             }
-
-            if (!System.IO.Directory.Exists(destDirectory))
+            catch (Exception e)
             {
-                System.IO.Directory.CreateDirectory(destDirectory);
+                throw new AllocatorException("See inner exception for details", e);
             }
-
-            System.IO.File.Copy(sourceFileName, destFileName, true);
         }
 
         /// <summary>
