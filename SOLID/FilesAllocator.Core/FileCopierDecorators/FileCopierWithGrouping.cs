@@ -4,11 +4,11 @@ using FilesAllocator.Core.Utils;
 
 namespace FilesAllocator.Core.FileCopierDecorators
 {
-    internal class FileCopierWithGroupingByCreationDate : IFileCopier
+    internal class FileCopierWithGrouping : IFileCopier
     {
         private readonly IFileCopier @base;
 
-        public FileCopierWithGroupingByCreationDate(IFileCopier @base)
+        public FileCopierWithGrouping(IFileCopier @base)
         {
             this.@base = @base;
         }

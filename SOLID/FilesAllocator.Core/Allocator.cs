@@ -39,7 +39,7 @@ namespace FilesAllocator.Core
 
                 if (groupByCreationDateHandler)
                 {
-                    fileCopier = new FileCopierWithGroupingByCreationDate(fileCopier);
+                    fileCopier = new FileCopierWithGrouping(fileCopier);
                 }
 
                 if (filteredExtensions?.Length > 0)

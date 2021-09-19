@@ -53,7 +53,7 @@
     <Compile Include="FileCopier.cs" />
     <Compile Include="FileCopierDecorators\FileCopierWithCreationDatePrefixFilename.cs" />
     <Compile Include="FileCopierDecorators\FileCopierWithExtensionsFilter.cs" />
-    <Compile Include="FileCopierDecorators\FileCopierWithGroupingByCreationDate.cs" />
+    <Compile Include="FileCopierDecorators\FileCopierWithGrouping.cs" />
     <Compile Include="FileCopierDecorators\FileCopierWithRenamingDuplicates.cs" />
     <Compile Include="IAllocator.cs" />
     <Compile Include="File.cs" />
