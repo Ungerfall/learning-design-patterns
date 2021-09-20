@@ -1,6 +1,4 @@
-﻿using FilesAllocator.Core.FileCopierDecorators;
-using FilesAllocator.Core.Grouping;
-using FilesAllocator.Core.Utils;
+﻿using FilesAllocator.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +17,6 @@ namespace FilesAllocator.Core
         /// <param name="groupByCreationDateHandler">TRUE - if you need to group files into directories by the creation date</param>
         /// <param name="filteredExtensions">Array of type extensions which should be copying</param>
         /// <returns>Count of copied files</returns>
-        // TODO Слишком много параметров. Если нужно добавить новую конфигурацию, то придется добавить параметр в метод + прописать логику обработки этого параметра
         public int Copy(string inputDirectory,
             string outputDirectory,
             bool useSubFolders,
@@ -29,32 +26,33 @@ namespace FilesAllocator.Core
         {
             try
             {
-                IFileCopier fileCopier = new FileCopier();
-
                 var inputFiles = DirectoryUtils.GetFilesByDirectory(inputDirectory, useSubFolders);
                 var files = inputFiles.Select(f => new File(f, outputDirectory)).ToList();
-
-                // TODO Все эти преобразования лучше вынести за пределы класса
-                if (creationDateTimePrefixName)
+                var cfg = new Configuration
                 {
-                    fileCopier = new FileCopierWithCreationDatePrefixFilename(fileCopier);
-                }
+                    CreationDateTimePrefixName = creationDateTimePrefixName,
+                    FilteredExtensions = filteredExtensions,
+                    GroupByCreationDate = groupByCreationDateHandler,
+                    GroupByExtension = false
+                };
+                var fileCopier = FileCopier.Create(cfg);
 
-                if (groupByCreationDateHandler)
-                {
-                    var groupings = new SortedList<int, IGroupingStrategy>
-                    {
-                        {1, new GroupByCreationDate()}
-                    };
-                    fileCopier = new FileCopierWithGrouping(fileCopier, groupings);
-                }
+                return fileCopier.Copy(files);
+            }
+            catch (Exception e)
+            {
+                throw new AllocatorException("See inner exception for details", e);
+            }
+        }
 
-                if (filteredExtensions?.Length > 0)
-                {
-                    fileCopier = new FileCopierWithExtensionsFilter(fileCopier, filteredExtensions);
-                }
-
-                fileCopier = new FileCopierWithRenamingDuplicates(fileCopier);
+        public int CopyNew(string inputDirectory, string outputDirectory, bool useSubFolders)
+        {
+            try
+            {
+                var inputFiles = DirectoryUtils.GetFilesByDirectory(inputDirectory, useSubFolders);
+                var files = inputFiles.Select(f => new File(f, outputDirectory)).ToList();
+                var cfg = Configuration.ParseJsonConfig();
+                var fileCopier = FileCopier.Create(cfg);
 
                 return fileCopier.Copy(files);
             }

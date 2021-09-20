@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FilesAllocator.Core.FileCopierDecorators;
+using FilesAllocator.Core.Grouping;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -33,6 +35,40 @@ namespace FilesAllocator.Core
             }
 
             System.IO.File.Copy(sourceFileName, destFileName, overwrite: true);
+        }
+
+        internal static IFileCopier Create(Configuration cfg)
+        {
+            IFileCopier fileCopier = new FileCopier();
+            if (cfg.CreationDateTimePrefixName)
+            {
+                fileCopier = new FileCopierWithCreationDatePrefixFilename(fileCopier);
+            }
+
+            if (cfg.GroupByCreationDate || cfg.GroupByExtension)
+            {
+                var groupings = new SortedList<int, IGroupingStrategy>();
+                if (cfg.GroupByCreationDate)
+                {
+                    groupings.Add(1, new GroupByCreationDate());
+                }
+
+                if (cfg.GroupByExtension)
+                {
+                    groupings.Add(2, new GroupByExtension());
+                }
+
+                fileCopier = new FileCopierWithGrouping(fileCopier, groupings);
+            }
+
+            if (cfg.FilteredExtensions?.Length > 0)
+            {
+                fileCopier = new FileCopierWithExtensionsFilter(fileCopier, cfg.FilteredExtensions);
+            }
+
+            fileCopier = new FileCopierWithRenamingDuplicates(fileCopier);
+
+            return fileCopier;
         }
     }
 }
