@@ -176,6 +176,63 @@ namespace FilesAllocator.CoreTest
 			#endregion
 		}
 
+		[Test]
+		public void CopyNew_WithoutSubfolders_CopiedFilesCount()
+		{
+			#region Act
+
+			var copiedFilesCount = _allocator.CopyNew(
+				_inputFolder,
+				_outputFolder, 
+				false);
+
+			#endregion
+
+			#region Asserts
+
+			Assert.That(copiedFilesCount, Is.EqualTo(2));
+
+			#endregion
+		}
+
+		[Test]
+		public void CopyNew_WithSubfolders_CopiedFilesCount()
+		{
+			#region Act
+
+			var copiedFilesCount = _allocator.CopyNew(
+				_inputFolder,
+				_outputFolder,
+				true);
+
+			#endregion
+
+			#region Asserts
+
+			Assert.That(copiedFilesCount, Is.EqualTo(6));
+
+			#endregion
+		}
+
+		[Test]
+		public void CopyNew_WithoutAlgorithm_CheckOutput()
+		{
+			#region Act
+
+			_allocator.CopyNew(
+				_inputFolder, 
+				_outputFolder, 
+				true);
+
+			#endregion
+
+			#region Assert
+
+			Assert.That(Directory.GetFiles(_outputFolder).Length, Is.EqualTo(6));
+
+			#endregion
+		}
+
 		#endregion
 
 		#region Helper methods

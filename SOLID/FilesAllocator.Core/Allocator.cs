@@ -17,6 +17,7 @@ namespace FilesAllocator.Core
         /// <param name="groupByCreationDateHandler">TRUE - if you need to group files into directories by the creation date</param>
         /// <param name="filteredExtensions">Array of type extensions which should be copying</param>
         /// <returns>Count of copied files</returns>
+        [Obsolete]
         public int Copy(string inputDirectory,
             string outputDirectory,
             bool useSubFolders,
