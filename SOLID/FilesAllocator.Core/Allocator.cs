@@ -19,6 +19,7 @@ namespace FilesAllocator.Core
         /// <param name="groupByCreationDateHandler">TRUE - if you need to group files into directories by the creation date</param>
         /// <param name="filteredExtensions">Array of type extensions which should be copying</param>
         /// <returns>Count of copied files</returns>
+        // TODO Слишком много параметров. Если нужно добавить новую конфигурацию, то придется добавить параметр в метод + прописать логику обработки этого параметра
         public int Copy(string inputDirectory,
             string outputDirectory,
             bool useSubFolders,
@@ -33,6 +34,7 @@ namespace FilesAllocator.Core
                 var inputFiles = DirectoryUtils.GetFilesByDirectory(inputDirectory, useSubFolders);
                 var files = inputFiles.Select(f => new File(f, outputDirectory)).ToList();
 
+                // TODO Все эти преобразования лучше вынести за пределы класса
                 if (creationDateTimePrefixName)
                 {
                     fileCopier = new FileCopierWithCreationDatePrefixFilename(fileCopier);
