@@ -37,6 +37,7 @@ namespace FilesAllocator.Core
             System.IO.File.Copy(sourceFileName, destFileName, overwrite: true);
         }
 
+        // TODO Текущее решение не позволяет конфигурировать порядок декораторов и нарушает требование задания
         internal static IFileCopier Create(Configuration cfg)
         {
             IFileCopier fileCopier = new FileCopier();

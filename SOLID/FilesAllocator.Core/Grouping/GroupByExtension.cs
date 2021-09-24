@@ -4,6 +4,7 @@ namespace FilesAllocator.Core.Grouping
 {
     internal class GroupByExtension : IGroupingStrategy
     {
+        // TODO Не конфигурируется, хардкод
         private readonly Dictionary<string, string> extensionToFolder = new Dictionary<string, string>
         {
             [".jpg"] = "Photo",

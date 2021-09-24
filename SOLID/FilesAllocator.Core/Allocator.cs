@@ -46,6 +46,7 @@ namespace FilesAllocator.Core
             }
         }
 
+        // TODO На мой взгляд, передача конфигурации в качестве параметра - более гибкое решение
         public int CopyNew(string inputDirectory, string outputDirectory, bool useSubFolders)
         {
             try
