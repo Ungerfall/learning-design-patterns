@@ -4,12 +4,12 @@ namespace FilesAllocator.Core.Grouping
 {
     internal class GroupByExtension : IGroupingStrategy
     {
-        // TODO Не конфигурируется, хардкод
-        private readonly Dictionary<string, string> extensionToFolder = new Dictionary<string, string>
+        private readonly Dictionary<string, string> extensionToFolder;
+
+        public GroupByExtension(Dictionary<string, string> extensionToFolder)
         {
-            [".jpg"] = "Photo",
-            [".txt"] = "Documents"
-        };
+            this.extensionToFolder = extensionToFolder;
+        }
 
         public string GetGroupingFolderName(File file)
         {

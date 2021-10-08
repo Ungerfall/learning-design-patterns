@@ -29,13 +29,13 @@ namespace FilesAllocator.Core
             {
                 var inputFiles = DirectoryUtils.GetFilesByDirectory(inputDirectory, useSubFolders);
                 var files = inputFiles.Select(f => new File(f, outputDirectory)).ToList();
-                var cfg = new Configuration
-                {
-                    CreationDateTimePrefixName = creationDateTimePrefixName,
-                    FilteredExtensions = filteredExtensions,
-                    GroupByCreationDate = groupByCreationDateHandler,
-                    GroupByExtension = false
-                };
+                var cfg = new Configuration();
+                if (creationDateTimePrefixName)
+                    cfg.Instructions.Add(1, new CreationDateTimePrefixName());
+                if (groupByCreationDateHandler)
+                    cfg.Instructions.Add(2, new GroupByCreationDateInstruction());
+                if (filteredExtensions != null && filteredExtensions.Length > 0)
+                    cfg.Instructions.Add(3, new FilteredExtensionsInstruction(filteredExtensions));
                 var fileCopier = FileCopier.Create(cfg);
 
                 return fileCopier.Copy(files);
@@ -46,13 +46,12 @@ namespace FilesAllocator.Core
             }
         }
 
-        // TODO На мой взгляд, передача конфигурации в качестве параметра - более гибкое решение
-        public int CopyNew(string inputDirectory, string outputDirectory, bool useSubFolders)
+        public int Copy(Configuration configuration)
         {
             try
             {
-                var inputFiles = DirectoryUtils.GetFilesByDirectory(inputDirectory, useSubFolders);
-                var files = inputFiles.Select(f => new File(f, outputDirectory)).ToList();
+                var inputFiles = DirectoryUtils.GetFilesByDirectory(configuration.InputDirectory, configuration.UseSubFolders);
+                var files = inputFiles.Select(f => new File(f, configuration.OutputDirectory)).ToList();
                 var cfg = Configuration.ParseJsonConfig();
                 var fileCopier = FileCopier.Create(cfg);
 

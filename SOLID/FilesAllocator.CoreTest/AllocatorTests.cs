@@ -181,10 +181,13 @@ namespace FilesAllocator.CoreTest
 		{
 			#region Act
 
-			var copiedFilesCount = _allocator.CopyNew(
-				_inputFolder,
-				_outputFolder, 
-				false);
+            var copiedFilesCount = _allocator.Copy(
+                new Configuration
+                {
+                    InputDirectory = _inputFolder,
+                    OutputDirectory = _outputFolder,
+                    UseSubFolders = false
+                });
 
 			#endregion
 
@@ -200,10 +203,13 @@ namespace FilesAllocator.CoreTest
 		{
 			#region Act
 
-			var copiedFilesCount = _allocator.CopyNew(
-				_inputFolder,
-				_outputFolder,
-				true);
+			var copiedFilesCount = _allocator.Copy(
+                new Configuration
+                {
+                    InputDirectory = _inputFolder,
+                    OutputDirectory = _outputFolder,
+                    UseSubFolders = true
+                });
 
 			#endregion
 
@@ -219,10 +225,13 @@ namespace FilesAllocator.CoreTest
 		{
 			#region Act
 
-			_allocator.CopyNew(
-				_inputFolder, 
-				_outputFolder, 
-				true);
+			_allocator.Copy(
+                new Configuration
+                {
+                    InputDirectory = _inputFolder,
+                    OutputDirectory = _outputFolder,
+                    UseSubFolders = true
+                });
 
 			#endregion
 

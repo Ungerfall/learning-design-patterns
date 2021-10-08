@@ -37,34 +37,28 @@ namespace FilesAllocator.Core
             System.IO.File.Copy(sourceFileName, destFileName, overwrite: true);
         }
 
-        // TODO Текущее решение не позволяет конфигурировать порядок декораторов и нарушает требование задания
         internal static IFileCopier Create(Configuration cfg)
         {
             IFileCopier fileCopier = new FileCopier();
-            if (cfg.CreationDateTimePrefixName)
+            foreach (var instruction in cfg.Instructions.Values)
             {
-                fileCopier = new FileCopierWithCreationDatePrefixFilename(fileCopier);
-            }
-
-            if (cfg.GroupByCreationDate || cfg.GroupByExtension)
-            {
-                var groupings = new SortedList<int, IGroupingStrategy>();
-                if (cfg.GroupByCreationDate)
+                if (instruction is CreationDateTimePrefixName)
                 {
+                    fileCopier = new FileCopierWithCreationDatePrefixFilename(fileCopier);
+                }
+
+                if (instruction is GroupByCreationDateInstruction)
+                {
+                    var groupings = new SortedList<int, IGroupingStrategy>();
                     groupings.Add(1, new GroupByCreationDate());
+                    fileCopier = new FileCopierWithGrouping(fileCopier, groupings);
                 }
 
-                if (cfg.GroupByExtension)
+                if (instruction is FilteredExtensionsInstruction extensionsInstruction)
                 {
-                    groupings.Add(2, new GroupByExtension());
+                    fileCopier = new FileCopierWithExtensionsFilter(fileCopier, extensionsInstruction.FilteredExtensions);
                 }
 
-                fileCopier = new FileCopierWithGrouping(fileCopier, groupings);
-            }
-
-            if (cfg.FilteredExtensions?.Length > 0)
-            {
-                fileCopier = new FileCopierWithExtensionsFilter(fileCopier, cfg.FilteredExtensions);
             }
 
             fileCopier = new FileCopierWithRenamingDuplicates(fileCopier);

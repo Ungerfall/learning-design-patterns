@@ -12,7 +12,7 @@ namespace FilesAllocator.Core
             bool creationDateTimePrefixName = false,
             bool groupByCreationDateHandler = false,
             string[] filteredExtensions = null);
-        int CopyNew(string inputDirectory, string outputDirectory, bool useSubFolders);
+        int Copy(Configuration configuration);
         IEnumerable<string> GetFilesByDirectory(string path, bool useSubDirectories = false);
     }
 }
