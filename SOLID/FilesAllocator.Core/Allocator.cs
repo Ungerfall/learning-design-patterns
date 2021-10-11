@@ -46,13 +46,14 @@ namespace FilesAllocator.Core
             }
         }
 
+        // TODO Вернуть int - неинформативно, т.к. вызывающему коду, скорее всего, понадобится список файлов, куда были скопированы исходные данные. 
         public int Copy(Configuration configuration)
         {
             try
             {
                 var inputFiles = DirectoryUtils.GetFilesByDirectory(configuration.InputDirectory, configuration.UseSubFolders);
                 var files = inputFiles.Select(f => new File(f, configuration.OutputDirectory)).ToList();
-                var cfg = Configuration.ParseJsonConfig();
+                var cfg = Configuration.ParseJsonConfig(); // TODO Зачем передавать конфигурцию в метод и потом считывать еще одну из файла?
                 var fileCopier = FileCopier.Create(cfg);
 
                 return fileCopier.Copy(files);

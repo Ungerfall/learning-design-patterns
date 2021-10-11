@@ -12,7 +12,7 @@ namespace FilesAllocator.Core
         public string OutputDirectory { get; set; }
         public bool UseSubFolders { get; set; }
 
-        public SortedList<int, IAllocatorInstruction> Instructions { get; set; } = new SortedList<int, IAllocatorInstruction>();
+        public SortedList<int, IAllocatorInstruction> Instructions { get; set; } = new SortedList<int, IAllocatorInstruction>(); // TODO Где и как заполняется этот список?
 
         public static Configuration ParseJsonConfig()
         {
