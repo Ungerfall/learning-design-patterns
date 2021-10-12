@@ -1,0 +1,50 @@
+// Copyright © 2021 EPAM Systems, Inc. All Rights Reserved. All information contained herein is, and remains the
+// property of EPAM Systems, Inc. and/or its suppliers and is protected by international intellectual
+// property law. Dissemination of this information or reproduction of this material is strictly forbidden,
+// unless prior written permission is obtained from EPAM Systems, Inc
+﻿using System;
+
+namespace StockExchange.Task4
+{
+    public abstract class Player : IPlayer
+    {
+        private readonly IBroker _broker;
+
+        protected Player(IBroker broker)
+        {
+            _broker = broker ?? throw new ArgumentNullException(nameof(broker));
+            _broker.OfferSucceeded += BrokerOnOfferSucceeded;
+        }
+
+        private void BrokerOnOfferSucceeded(object sender, OfferEventArgs e)
+        {
+            var (playerId, _, numberOfShares, isBuy) = e.Offer;
+            if (playerId != PlayerId)
+                return;
+
+            if (isBuy)
+            {
+                BoughtShares += numberOfShares;
+            }
+            else
+            {
+                SoldShares += numberOfShares;
+            }
+        }
+
+        public Guid PlayerId { get; init; }
+
+        public bool SellOffer(string stockName, int numberOfShares)
+        {
+            return _broker.SellOffer(this, stockName, numberOfShares);
+        }
+
+        public bool BuyOffer(string stockName, int numberOfShares)
+        {
+            return _broker.BuyOffer(this, stockName, numberOfShares);
+        }
+
+        public int SoldShares { get; private set; } = 0;
+        public int BoughtShares { get; private set; } = 0;
+    }
+}
